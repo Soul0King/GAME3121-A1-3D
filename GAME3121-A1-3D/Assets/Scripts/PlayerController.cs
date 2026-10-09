@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,10 +17,16 @@ public class PlayerController : MonoBehaviour
     private int score;
     public int maxScore = 16;
 
+    public List<AudioClip> clips = new List<AudioClip>();
+
+    private AudioSource source;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        source = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -46,6 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Coin"))
         {
+            source.PlayOneShot(clips[0]); //Coin pickup sfx
             UpdateScore();
             other.gameObject.SetActive(false);
         }
@@ -57,6 +65,10 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.name == "EnemyBody")
         {
             YouLose();
+        }
+        if (collision.collider.CompareTag("Wall"))
+        {
+            source.PlayOneShot(clips[1]); //Wall hit sfx
         }
     }
 
