@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject enemy;
 
     private Rigidbody rb;
+    private SoundManager sm;
 
     private float movementX;
     private float movementZ;
@@ -17,16 +18,15 @@ public class PlayerController : MonoBehaviour
     private int score;
     public int maxScore = 16;
 
-    public List<AudioClip> clips = new List<AudioClip>();
-
-    private AudioSource source;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
-        source = GetComponent<AudioSource>();
+        sm = FindAnyObjectByType<SoundManager>();
+
     }
 
     void Update()
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Coin"))
         {
-            source.PlayOneShot(clips[0]); //Coin pickup sfx
+            sm.PlayCoinSFX();
             UpdateScore();
             other.gameObject.SetActive(false);
         }
@@ -64,16 +64,18 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.name == "EnemyBody")
         {
+            sm.PlayLoseSFX();
             YouLose();
         }
         if (collision.collider.CompareTag("Wall"))
         {
-            source.PlayOneShot(clips[1]); //Wall hit sfx
+            sm.PlayWallSFX();
         }
     }
 
     private void YouLose()
     {
+        
         EndGameText.color = Color.red;
         EndGameText.text = "You Lose!";
         EndGameText.gameObject.SetActive(true);
@@ -86,6 +88,7 @@ public class PlayerController : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
         if (score == maxScore)
         {
+            sm.PlayWinSFX();
             EndGameText.color = Color.green;
             EndGameText.text = "You Win!";
             EndGameText.gameObject.SetActive(true);
