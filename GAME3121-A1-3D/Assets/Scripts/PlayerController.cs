@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public TMP_Text scoreText;
     [SerializeField] public TMP_Text EndGameText;
     [SerializeField] GameObject enemy;
+    [SerializeField] ParticleSystem deathExplosion;
 
     private Rigidbody rb;
     private SoundManager sm;
@@ -37,10 +38,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        Move();
+    }
+    void Move()
+    {
         Vector3 movement = new Vector3(movementX, 0.0f, movementZ);
         rb.AddForce(movement * movementSpeed);
     }
-
 
     void OnMove(InputValue movementValue)
     {
@@ -79,6 +83,7 @@ public class PlayerController : MonoBehaviour
         EndGameText.color = Color.red;
         EndGameText.text = "You Lose!";
         EndGameText.gameObject.SetActive(true);
+        ParticleSystem.Instantiate(deathExplosion, transform.position, Quaternion.identity);
         gameObject.SetActive(false);
     }
 
