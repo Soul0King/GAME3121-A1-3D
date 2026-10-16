@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public TMP_Text EndGameText;
     [SerializeField] GameObject enemy;
     [SerializeField] ParticleSystem deathExplosion;
+    [SerializeField] ParticleSystem winEffect;
+    [SerializeField] ParticleSystem coinCollect;
 
     private Rigidbody rb;
     private SoundManager sm;
@@ -60,6 +62,7 @@ public class PlayerController : MonoBehaviour
             sm.PlayCoinSFX();
             UpdateScore();
             other.gameObject.SetActive(false);
+            ParticleSystem.Instantiate(coinCollect, other.transform.position, Quaternion.identity);
         }
 
     }
@@ -87,17 +90,23 @@ public class PlayerController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void YouWin()
+    {
+        sm.PlayWinSFX();
+        EndGameText.color = Color.green;
+        EndGameText.text = "You Win!";
+        EndGameText.gameObject.SetActive(true);
+        enemy.gameObject.SetActive(false);
+        winEffect.Play();
+    }
+
     private void UpdateScore()
     {
         score++;
         scoreText.text = "Score: " + score.ToString();
         if (score == maxScore)
         {
-            sm.PlayWinSFX();
-            EndGameText.color = Color.green;
-            EndGameText.text = "You Win!";
-            EndGameText.gameObject.SetActive(true);
-            enemy.gameObject.SetActive(false);
+            YouWin();
         }
     }
 }
