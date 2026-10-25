@@ -1,7 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -73,6 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             sm.PlayLoseSFX();
             YouLose();
+            LoadSceneWithDelay();
         }
         if (collision.collider.CompareTag("Wall"))
         {
@@ -87,7 +92,8 @@ public class PlayerController : MonoBehaviour
         EndGameText.text = "You Lose!";
         EndGameText.gameObject.SetActive(true);
         ParticleSystem.Instantiate(deathExplosion, transform.position, Quaternion.identity);
-        gameObject.SetActive(false);
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
+        enemy.gameObject.GetComponent<NavMeshAgent>().enabled = false;
     }
 
     private void YouWin()
@@ -107,6 +113,19 @@ public class PlayerController : MonoBehaviour
         if (score == maxScore)
         {
             YouWin();
+            LoadSceneWithDelay();
         }
+    }
+
+    public void LoadSceneWithDelay()
+    {
+        StartCoroutine(DelayAndLoadRoutine());
+    }
+
+    private IEnumerator DelayAndLoadRoutine()
+    {
+        yield return new WaitForSeconds(3);
+
+        SceneManager.LoadScene("StartScene");
     }
 }
