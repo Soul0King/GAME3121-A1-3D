@@ -19,21 +19,27 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private SoundManager sm;
 
+    private CameraController cc;
+
     private float movementX;
     private float movementZ;
     public float movementSpeed = 5.0f;
     private int score;
     public int maxScore = 16;
 
-    
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
 
         sm = FindAnyObjectByType<SoundManager>();
 
+        cc = FindAnyObjectByType<CameraController>();
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
     }
 
     void Update()
@@ -87,7 +93,7 @@ public class PlayerController : MonoBehaviour
 
     private void YouLose()
     {
-        
+        cc.FlipFollow();
         EndGameText.color = Color.red;
         EndGameText.text = "You Lose!";
         EndGameText.gameObject.SetActive(true);
